@@ -14,11 +14,12 @@ pio.kaleido.scope.chromium_args = tuple([arg for arg in pio.kaleido.scope.chromi
 
 class CandidateInfo(BaseModel):
     university: str  
-    age: int  
+    age: int
+    skills: list[str]
+
     college: str
     gender: str
     experience: int  
-    skills: list[str]
     department: str
     degrees:str
 

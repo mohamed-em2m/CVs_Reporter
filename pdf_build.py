@@ -2,16 +2,11 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 import os
-import ast
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image as ReportLabImage, ListFlowable, ListItem, PageBreak
 from reportlab.lib.units import inch
-from PIL import Image as PILImage, ImageDraw, ImageFont
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.output_parsers import StrOutputParser
 import random
 
 class NotionDataPDF:
