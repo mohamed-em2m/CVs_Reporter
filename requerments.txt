@@ -1,0 +1,8 @@
+kaleido
+plotly
+pandas
+reportlab
+langchain_google_genai
+fitz
+frontend
+pymupdf
