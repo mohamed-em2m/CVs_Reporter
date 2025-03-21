@@ -1,3 +1,5 @@
 venv
 __pycache*
 *.pyc
+cvs
+chart_images
