@@ -2,13 +2,21 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 import os
+import json
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image as ReportLabImage, ListFlowable, ListItem, PageBreak
 from reportlab.lib.units import inch
+from PIL import Image as PILImage, ImageDraw, ImageFont
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.output_parsers import StrOutputParser
 import random
-
+import plotly.io as pio
+import ast
+pio.kaleido.scope.chromium_args = tuple([arg for arg in pio.kaleido.scope.chromium_args if arg != "--disable-dev-shm-usage"])
+#pio.kaleido.scope.chromium_args = tuple([arg for arg in pio.kaleido.scope.chromium_args if arg != "--disable-dev-shm-usage"])
 class NotionDataPDF:
     def __init__(self, output_filename, title="Data Visualization Report", pagesize=A4):
         """Initialize PDF document with Notion-like styling"""
@@ -242,8 +250,10 @@ def create_survey_report(df, output_pdf="survey_report.pdf"):
         report.add_heading(f"{column} Distribution", 1)
         report.add_paragraph(f"The chart below shows the distribution of responses across {column}:")
         #report.add_spacer()
-        
-        if column != "skills":
+        print(df[column].iloc[-1],column,type(df[column].iloc[-1]) ,type (df[column].iloc[-1]) is str  )
+        if pd.api.types.is_numeric_dtype(df[column]) or (
+            isinstance(df[column].iloc[-1], str) and not df[column].iloc[-1].startswith("[")
+        ):            
             fig = go.Figure()
             fig.add_trace(go.Histogram(
                 x=df[column], 
@@ -265,16 +275,22 @@ def create_survey_report(df, output_pdf="survey_report.pdf"):
             # Handle skills column with ast.literal_eval
             skills_counts = {}
             try:
-                for skills in df["skills"]:
-                    for skill in skills:
+                for skills in  df["skills"]:
+                    for skill in  ast.literal_eval(skills):
+                        if len(skill)>25:
+                            skill=skill[:25]
                         skills_counts[skill] = skills_counts.get(skill, 0) + 1
+                sorted_skills=sorted(list(skills_counts.items()), key=lambda x: x[1], reverse=True)
+                max_indexs=80
+                sorted_skills_keys=[ i[0] for i in sorted_skills][:max_indexs]
+                sorted_skills_values=[ i[1] for i in sorted_skills][:max_indexs]
 
-                skills = list(skills_counts.keys())
-                counts = list(skills_counts.values())
+                skills =sorted_skills_keys
+                counts = sorted_skills_values
 
                 # Generate a random color for each skill
                 colors = [f'rgb({random.randint(50, 200)},{random.randint(50, 200)},{random.randint(50, 200)})' for _ in skills]
-
+                print
                 fig = go.Figure()
                 fig.add_trace(go.Bar(
                     x=counts,
@@ -287,16 +303,16 @@ def create_survey_report(df, output_pdf="survey_report.pdf"):
                     title=f"{column} Distribution",
                     xaxis_title="Number of Responses",
                     yaxis_title=f"{column}",
-                    bargap=0.3,
+                    bargap=.55,
                     width=2400,    # Increase the width
-                    height=1800,   # Increase the height
-                    font=dict(size=14),
+                    height=2500,   # Increase the height
+                    font=dict(size=20),
                     showlegend=False
                 )
 
                 fig.update_xaxes(tickmode='linear', dtick=1, showticklabels=True)
                 
-                report.add_plotly_figure(fig, width=7.5, height=7.5, caption=f"Figure {index+1}: Distribution of responses by {column}")
+                report.add_plotly_figure(fig, width=7.5, height=10, caption=f"Figure {index+1}: Distribution of responses by {column}")
             except Exception as e:
                 print(e)
                 report.add_paragraph(f"{e}")

@@ -9,19 +9,15 @@ import glob
 import fitz  # PyMuPDF
 import logging
 from typing import List, Dict, Any, Optional
-import plotly.io as pio
-pio.kaleido.scope.chromium_args = tuple([arg for arg in pio.kaleido.scope.chromium_args if arg != "--disable-dev-shm-usage"])
-
 class CandidateInfo(BaseModel):
     university: str  
     age: int
-    skills: list[str]
-
     college: str
     gender: str
     experience: int  
     department: str
     degrees:str
+    skills: list[str]
 
 class ExtractedData(BaseModel):
     candidates: list[CandidateInfo]
@@ -157,7 +153,9 @@ class ExtractAgent:
                         self.logger.error(f"Failed to process batch {batch_idx + 1} after {max_retries} attempts")
         
         data = self.get_data_as_dict(extracted_data_list)
-        return pd.DataFrame(data)
+        data_dataframe=pd.DataFrame(data)
+        data_dataframe.to_csv("./CVs_data.csv",index=False)
+        return data_dataframe
 
     def run(self, path: str, output_path: Optional[str] = None) -> pd.DataFrame:
         """Main method to run the extraction process."""

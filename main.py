@@ -2,7 +2,9 @@ from init_agent import ExtractAgent
 from pdf_build import create_survey_report
 import os
 import logging
-
+import pandas as pd
+import kaleido
+import os
 if __name__ == "__main__":
     import argparse
     
@@ -31,8 +33,8 @@ if __name__ == "__main__":
     agent = ExtractAgent()
     
     logger.info(f"Processing CVs from directory: {args.path}")
-    data = agent.run(args.path)  # Fixed: should pass the path, not the API key
-    
+#    data = agent.run(args.path)  # Fixed: should pass the path, not the API key
+    data=pd.read_csv("./CVs_data.csv")
     # Create the PDF report
     logger.info(f"Creating survey report: {args.output}")
     create_survey_report(data, args.output)
