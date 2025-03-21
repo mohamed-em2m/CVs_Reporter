@@ -270,8 +270,14 @@ def create_survey_report(df, output_pdf="survey_report.pdf"):
             )
             fig.update_xaxes(tickmode='linear', dtick=1,    showticklabels=True)
             report.add_plotly_figure(fig, width=7.5, height=3.5, caption=f"Figure {index+1}: Distribution of responses by {column}")
-
+            loop+=1
+            if loop%2==0:
+                report.add_page_break()
         else:
+            if (loop%2!=0):
+               report.add_page_break()
+
+                
             # Handle skills column with ast.literal_eval
             skills_counts = {}
             try:
@@ -319,9 +325,7 @@ def create_survey_report(df, output_pdf="survey_report.pdf"):
                 continue
                 
         # Add the figure to the PDF
-        loop+=1
-        if loop%2==0:
-            report.add_page_break()
+
             
     # Create the title page (should be done last to appear first)
     #date_range = f"{start_date} to {end_date}" if start_date and end_date else None
