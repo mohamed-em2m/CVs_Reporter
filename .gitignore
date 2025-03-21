@@ -3,3 +3,4 @@ __pycache*
 *.pyc
 cvs
 chart_images
+*.pdf
