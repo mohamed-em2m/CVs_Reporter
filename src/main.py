@@ -1,5 +1,5 @@
-from init_agent import ExtractAgent
-from pdf_build import create_survey_report
+from src.init_agent import ExtractAgent
+from src.pdf_build import create_survey_report
 import os
 import logging
 import pandas as pd
