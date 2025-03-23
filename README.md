@@ -1,4 +1,4 @@
-#CVs Report Generator 
+# CVs Report Generator 
 
 This repository contains a project that leverages the Agent Gemini API to generate comprehensive survey reports from candidate CVs (in PDF format). The project extracts relevant data, creates insightful charts, and compiles the results into a final PDF report while also saving processed data to CSV format.
 
